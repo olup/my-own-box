@@ -1,0 +1,39 @@
+{
+  "name": "my-own-cloud",
+  "version": "0.1.11",
+  "description": "Auto contained pretty cloud",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "bin" : {
+     "simple-cloud": "./index.js"
+  },
+  "keywords": [
+    "fileserver"
+  ],
+  "author": "Loup Topalian",
+  "dependencies": {
+    "body-parser": "1.5.2",
+    "dat-middleware": "^1.8.1",
+    "debug": "^1.0.4",
+    "express": "^4.8.0",
+    "express-domain-middleware": "^0.1.0",
+    "findit": "^1.2.0",
+    "istextorbinary": "^2.1.0",
+    "middleware-flow": "^0.5.1",
+    "mime": "^1.2.11",
+    "morgan": "^1.2.3",
+    "mv": "^2.0.0",
+    "request": "^2.40.0",
+    "rimraf": "^2.2.8",
+    "slash": "^1.0.0"
+  },
+  "devDependencies": {
+    "async": "*",
+    "lab": "^4.7.0",
+    "lodash": "*",
+    "supertest": "*",
+    "walkdir": "*"
+  }
+}

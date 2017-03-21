@@ -1,0 +1,14 @@
+---
+apiPort : 2020
+# Conf file for the small file server and API
+subPath : lock
+
+# Subdomain to use with localtunnel. If not defined or not available a random name will be provided
+domain : files
+
+# Define here user list for protected access. No users leave the server open to everyone
+users : 
+  - username : loup
+    password : U88vLdvesp
+  - username : Gaelle
+    password : matlab29
