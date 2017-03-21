@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 var express = require('express');
 var app = express();
 var fs = require('fs');
@@ -6,6 +8,7 @@ var yaml = require('js-yaml')
 var fileserver = require('./fileserver.js');
 var localtunnel = require('localtunnel');
 var cluster = require('cluster');
+var chalk = require("chalk")
 
 // configuration object
 var conf = {
@@ -18,6 +21,23 @@ var conf = {
 }
 
 if (cluster.isMaster) {
+    console.log( chalk.blue(`                 _
+              (\`  ).                   _
+             (     ).              .:(\`  )\`.
+)           _(       '\`.          :(   .    )
+        .=(\`(      .   )     .--  \`.  (    ) )
+       ((    (..__.:'-'   .+(   )   \` _\`  ) )
+\`.     \`(       ) )       (   .  )     (   )  ._
+  )      \` __.:'   )     (   (   ))     \`-'.-(\`  )
+)  )  ( )       --'       \`- __.'         :(      ))
+.-'  (_.'          .')                    \`(    )  ))
+                  (_  )                     \` __.:'
+
+--..,___.--,--'\`,---..-.--+--.,,-,,..._.--..-._.-a:f--.
+
+
+`) )
+
   cluster.fork();
 
   cluster.on('exit', function(worker, code, signal) {
@@ -26,18 +46,18 @@ if (cluster.isMaster) {
 }
 
 if (cluster.isWorker) {
+
   // Loading conf file from root folder
     try {
     var fileConf = yaml.safeLoad(fs.readFileSync(path.join(conf.basePath,'conf.yml'), 'utf8'));
     Object.assign(conf, fileConf)
     } catch (e) {
-    console.log('No config file found - using default');
+    console.log(chalk.bgYellow('No config file found - using default'));
     }
 
     // Starting script
-    console.log("Starting from ", path.join(conf.basePath, conf.subPath))
-
-    console.log(`starting API server on port ${conf.apiPort}`)
+    console.log(chalk.bgGreen("Starting from ", path.join(conf.basePath, conf.subPath)))
+    console.log(chalk.bgGreen(`starting API server on port ${conf.apiPort}`))
 
     // Starting server
     fileserver(app, conf);
@@ -54,10 +74,10 @@ if (cluster.isWorker) {
     if(conf.localtunnel){
         var tunnel = localtunnel(conf.apiPort, {subdomain : conf.domain}, function(err, tunnel) {
             if (err) {
-                console.log("local tunnel couldn't run - restarting")
+                console.log(chalk.bgRed("local tunnel couldn't run - restarting"))
                 process.exit(1); 
             }
-            else console.log("Local tunnel running on "+tunnel.url)
+            else console.log(chalk.bgGreen("Local tunnel running on "+tunnel.url))
         });
 
         tunnel.on('close', function() {
@@ -66,7 +86,7 @@ if (cluster.isWorker) {
         });
 
         tunnel.on('error', function() {
-            console.log("Localtunnel is now disconnected - restarting")
+            console.log(chalk.bgRed("Localtunnel is now disconnected - restarting"))
             process.exit(1); 
         });
     }

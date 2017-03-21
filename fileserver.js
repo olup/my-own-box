@@ -99,7 +99,7 @@ var fileserver = function(app, confArg) {
   app.use(bodyParser.json());
 
   // Logs
-  app.use(morgan('combined'));
+  apiRouter.use(morgan('tiny'));
 
   // Login
   apiRouter.post('/login', login)

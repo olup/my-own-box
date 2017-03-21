@@ -1,5 +1,5 @@
 {
-  "name": "my-own-cloud",
+  "name": "my-own-box",
   "version": "0.1.11",
   "description": "Auto contained pretty cloud",
   "main": "index.js",
@@ -7,7 +7,7 @@
     "start": "node index.js"
   },
   "bin" : {
-     "simple-cloud": "./index.js"
+     "my-own-box": "./index.js"
   },
   "keywords": [
     "fileserver"

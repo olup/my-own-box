@@ -1,4 +1,4 @@
-My Own Cloud
+My Own Box
 ============
 
 A small, fast and self hosted web based cloud server, with a minimal client included.
