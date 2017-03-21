@@ -71,24 +71,30 @@ if (cluster.isWorker) {
 
     app.listen(conf.apiPort);
 
+    var tunnel
     if(conf.localtunnel){
-        var tunnel = localtunnel(conf.apiPort, {subdomain : conf.domain}, function(err, tunnel) {
-            if (err) {
-                console.log(chalk.bgRed("local tunnel couldn't run - restarting"))
+        function startTunnel(){
+            tunnel = localtunnel(conf.apiPort, {subdomain : conf.domain}, function(err, tunnel) {
+                if (err) {
+                    console.log(chalk.bgRed("local tunnel couldn't run - restarting"))
+                    process.exit(1); 
+                }
+                else console.log(chalk.bgGreen("Local tunnel running on "+tunnel.url))
+            });
+
+            tunnel.on('close', function() {
+                console.log("Localtunnel is now disconnected")
                 process.exit(1); 
-            }
-            else console.log(chalk.bgGreen("Local tunnel running on "+tunnel.url))
-        });
+            });
 
-        tunnel.on('close', function() {
-            console.log("Localtunnel is now disconnected")
-            process.exit(1); 
-        });
+            tunnel.on('error', function() {
+                console.log(chalk.bgRed("Localtunnel is now disconnected - restarting"))
+                startTunnel()
+            });
+        }
 
-        tunnel.on('error', function() {
-            console.log(chalk.bgRed("Localtunnel is now disconnected - restarting"))
-            process.exit(1); 
-        });
+        startTunnel()
+        
     }
 }
 
