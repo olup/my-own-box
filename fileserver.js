@@ -88,6 +88,9 @@ var fileserver = function(app, confArg) {
   app.use(cookieParser())
   app.use(bodyParser.json());
 
+  // health
+  apiRouter.get('/health-check', healthCheck)
+
   // Logs
   apiRouter.use(morgan('tiny'));
 
@@ -111,6 +114,11 @@ var fileserver = function(app, confArg) {
 
 
 // controller routes
+
+// Health Check
+function healthCheck (req, res, next) {
+  return res.json({success : true, message:"Api is online"})
+}
 
 // Auth
 function checkAuth (req, res, next) {

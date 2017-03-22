@@ -48,6 +48,7 @@ if (cluster.isWorker) {
         Object.assign(conf, fileConf)
         startServer(conf)
     } catch (e) {
+        console.log(e)
         if(e.code == "ENOENT"){
             fs.copySync(path.join(__dirname,'conf.yml'), path.join(conf.basePath, "conf.yml"))
             console.log(chalk.bgYellow('No config file found - We created one in your directory'));
@@ -76,19 +77,21 @@ if (cluster.isWorker) {
 
 
 function startTunnel(){
+    var interval
     var tunnel = localtunnel(conf.apiPort, {subdomain : conf.domain}, function(err, tunnel) {
         if (err) {
             console.log(chalk.bgRed("local tunnel couldn't run - restarting"), JSON.stringify(err))
             process.exit(1)
         }
         else {
-            setInterval(()=> pingTunnel(tunnel) , 10000)
+            interval = setInterval(()=> pingTunnel(tunnel) , 10000)
             console.log(chalk.bgGreen("Local tunnel running on "+tunnel.url))
         }
     });
 
     tunnel.on('close', function() {
         console.log(chalk.bgRed("Localtunnel is now disconnected - restarting"))
+        if(interval) clearInterval(interval);
         process.exit(1)
     });
 
@@ -121,12 +124,13 @@ function startServer(conf){
 }
 
 function pingTunnel(tunnel){
-    https.get(tunnel.url, function (res) {
+    https.get(tunnel.url+"/api/health-check", function (res) {
         if (res.statusCode != 200) {
             console.log(chalk.bgRed("The tunnel doesn't seem to be online - restarting"))
-            process.exit(1)
+            tunnel.close()
         }
     }).on('error', function(e) {
-        process.exit(1)
+        console.log(e)
+        tunnel.close()
     });;
 }
