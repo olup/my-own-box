@@ -84,7 +84,7 @@ function startTunnel(){
             process.exit(1)
         }
         else {
-            interval = setInterval(()=> pingTunnel(tunnel) , 60000)
+            interval = setInterval(()=> pingTunnel(tunnel) , 30000)
             console.log(chalk.bgGreen("Local tunnel running on "+tunnel.url))
         }
     });
