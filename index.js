@@ -6,8 +6,11 @@ var fs = require('fs-extra');
 var path = require('path');
 var yaml = require('js-yaml')
 var fileserver = require('./fileserver.js');
-var localtunnel = require('localtunnel');
 var cluster = require('cluster');
+
+// localtunnel specific dep
+var localtunnel = require('localtunnel');
+var https = require('https');
 
 // console related dep
 var chalk = require("chalk")
@@ -78,7 +81,10 @@ function startTunnel(){
             console.log(chalk.bgRed("local tunnel couldn't run - restarting"), JSON.stringify(err))
             process.exit(1)
         }
-        else console.log(chalk.bgGreen("Local tunnel running on "+tunnel.url))
+        else {
+            setInterval(()=> pingTunnel(tunnel) , 10000)
+            console.log(chalk.bgGreen("Local tunnel running on "+tunnel.url))
+        }
     });
 
     tunnel.on('close', function() {
@@ -112,4 +118,12 @@ function startServer(conf){
     if(conf.localtunnel){
         startTunnel()
     }
+}
+
+function pingTunnel(tunnel){
+    https.get(tunnel.url, function (res) {
+        if (res.statusCode != 200) process.exit(1)
+    }).on('error', function(e) {
+        process.exit(1)
+    });;
 }
