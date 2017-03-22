@@ -88,12 +88,12 @@ function startTunnel(){
     });
 
     tunnel.on('close', function() {
-        console.log("Localtunnel is now disconnected")
+        console.log(chalk.bgRed("Localtunnel is now disconnected - restarting"))
         process.exit(1)
     });
 
     tunnel.on('error', function() {
-        console.log(chalk.bgRed("Localtunnel is now disconnected - restarting"))
+        console.log(chalk.bgRed("An error happened with the tunnel"))
         tunnel.close()
     });
 }
@@ -122,7 +122,10 @@ function startServer(conf){
 
 function pingTunnel(tunnel){
     https.get(tunnel.url, function (res) {
-        if (res.statusCode != 200) process.exit(1)
+        if (res.statusCode != 200) {
+            console.log(chalk.bgRed("The tunnel doesn't seem to be online - restarting"))
+            process.exit(1)
+        }
     }).on('error', function(e) {
         process.exit(1)
     });;
