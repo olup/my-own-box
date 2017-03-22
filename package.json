@@ -7,7 +7,7 @@
     "start": "node index.js"
   },
   "bin": {
-    "my-own-box": "./index.js"
+    "myownbox": "./index.js"
   },
   "keywords": [
     "fileserver"

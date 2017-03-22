@@ -13,9 +13,7 @@ A small client is integrated too, so that you can start using MOB straight away.
 
 ## Usage
 
-npm install my-own-box
-or download this rep and 
-npm install
+npm install https://github.com/olup/my-own-box.git
 
 Then just navigate to the folder you wish to open to the world. Type in your console : my-own-cloud - 
 
