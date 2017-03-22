@@ -9,7 +9,7 @@ My Own Cloud lets you turn any folder into a simple file REST API, in one comman
 
 A small client is integrated too, so that you can start using MOB straight away.
 
-**Great for editing a static file blog, have a quick web folder to keep your files with you (but away from the NSA or Google), to edit your code on the go**
+**Great for editing a static file blog, have a quick web folder to keep your files with you (but away from the NSA or Google), or to edit your code on the go**
 
 ## Usage
 
