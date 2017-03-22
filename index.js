@@ -84,7 +84,7 @@ function startTunnel(){
             process.exit(1)
         }
         else {
-            interval = setInterval(()=> pingTunnel(tunnel) , 10000)
+            interval = setInterval(()=> pingTunnel(tunnel) , 60000)
             console.log(chalk.bgGreen("Local tunnel running on "+tunnel.url))
         }
     });
@@ -123,6 +123,7 @@ function startServer(conf){
     }
 }
 
+// check if tunnel is still on - localtunnel.me is very unstable
 function pingTunnel(tunnel){
     https.get(tunnel.url+"/api/health-check", function (res) {
         if (res.statusCode != 200) {
