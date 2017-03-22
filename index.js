@@ -20,7 +20,8 @@ var conf = {
     apiPort : 3000,
     localtunnel : true,
     jwtSecret : "BigFuckingSecret",
-    client : true
+    client : true,
+    exclusions : []
 }
 
 if (cluster.isMaster) {
@@ -44,8 +45,12 @@ if (cluster.isWorker) {
         Object.assign(conf, fileConf)
         startServer(conf)
     } catch (e) {
-        fs.copySync(path.join(__dirname,'conf.yml'), path.join(conf.basePath, "conf.yml"))
-        console.log(chalk.bgYellow('No config file found - We created one in your directory'));
+        if(e.code == "ENOENT"){
+            fs.copySync(path.join(__dirname,'conf.yml'), path.join(conf.basePath, "conf.yml"))
+            console.log(chalk.bgYellow('No config file found - We created one in your directory'));
+        }else{
+            console.log(chalk.bgRed("There was an error while reading your config file. Please make sure you wrote correct YAML"));
+        }
         prompt.start()
         prompt.get({
             properties: {

@@ -34,17 +34,7 @@ var allowCrossDomain = function(req, res, next) {
     }
 }
 
-  // AUTH
-var checkAuth = function (req, res, next) {
-  if(!conf.users) return next()
-  token = req.headers.token || req.cookies.token
-  if (!token) return res.status(401).json({error : true, message : "token not present or invalid"})
-    // invalid token
-  jwt.verify(token, conf.jwtSecret, function(err, decoded) {
-  if (err) return res.status(401).json({error : true, message : "token invalid"})
-    return next()
-  });
-}
+
 
 
 // global conf variables
@@ -105,6 +95,7 @@ var fileserver = function(app, confArg) {
   apiRouter.post('/login', login)
   
   // Protect following routes
+  apiRouter.use(filter)
   apiRouter.use(checkAuth)
 
   // Routes
@@ -121,6 +112,19 @@ var fileserver = function(app, confArg) {
 
 // controller routes
 
+// Auth
+function checkAuth (req, res, next) {
+  if(!conf.users) return next()
+  token = req.headers.token || req.cookies.token
+  if (!token) return res.status(401).json({error : true, message : "token not present or invalid"})
+    // invalid token
+  jwt.verify(token, conf.jwtSecret, function(err, decoded) {
+  if (err) return res.status(401).json({error : true, message : "token invalid"})
+    return next()
+  });
+}
+
+// Login 
 function login (req, res, next){
   var creds = req.body
   var users = conf.users
@@ -136,6 +140,18 @@ function login (req, res, next){
     })
   }
 
+}
+
+// Filter file 
+function filter(req,res,next){
+  var reqPath = decodeURI(url.parse(req.url).pathname)
+  var name = req.body.name || ""
+  var completePath = slash(path.join(basePath,reqPath, name))
+
+  if(filterFile(completePath)) return next()
+  else return res.status(403).json({error : true, message : "Type disabled"})
+
+  
 }
 
 // Get
@@ -165,7 +181,7 @@ var getFileOrFolder = function (req, res, next) {
         let mimeType
         let type = fs.lstatSync( path.join(basePath,topPath,name) ).isDirectory()?"directory":"file"
         if(type == "file") mimeType = mime.lookup( path.join(basePath,topPath,name) );
-        fileList.push({name , topPath, type, mimeType })
+        if(filterFile(path.join(basePath,topPath,name))) fileList.push({name , topPath, type, mimeType })
       }
     }
     // Option to download or get the raw file
@@ -260,3 +276,13 @@ var delFileOrFolder = function (req, res, next) {
 };
 
 module.exports = fileserver;
+
+function filterFile(path){
+  path = slash(path)
+  if(!conf.exclusions || !conf.exclusions.length) return true
+  for (let exp of conf.exclusions){
+    let reg = new RegExp(exp)
+    if(reg.test(path)) return false
+  }
+  return true
+}
