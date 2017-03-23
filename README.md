@@ -5,7 +5,9 @@ A small, fast and self hosted web based cloud server, with a minimal client incl
 
 Think of it as a mini personnal dropbox, super simple to use.
 
-My Own Box lets you turn any folder into a simple file REST API, in one command only. It automatically gets you a localtunnel adress so that you can access your cloud from anywhere without setting up any port forwarding or complex proxy.
+My Own Box lets you turn any folder into a simple file REST API, in one command only. 
+
+Access it from anywhere : no need to do anything, NGROK creates a tunnel to your cloud and quatrieme-gauche.ga provides you with a stable static url ! All of this for free !!!!
 
 A small client is integrated too, so that you can start using MOB straight away.
 

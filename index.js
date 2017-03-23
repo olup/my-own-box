@@ -66,30 +66,7 @@ var conf = {
 
 function startTunnel(){
     var interval
-    // var tunnel = localtunnel(conf.apiPort, {subdomain : conf.domain}, function(err, tunnel) {
-    //     if (err) {
-    //         console.log(chalk.bgRed("local tunnel couldn't run - restarting"), JSON.stringify(err))
-    //         process.exit(1)
-    //     }
-    //     else {
-    //         interval = setInterval(()=> pingTunnel(tunnel) , 30000)
-    //         console.log(chalk.bgGreen("Local tunnel running on "+tunnel.url))
-    //     }
-    // });
-
-    // tunnel.on('close', function() {
-    //     console.log(chalk.bgRed("Localtunnel is now disconnected - restarting"))
-    //     if(interval) clearInterval(interval);
-    //     process.exit(1)
-    // });
-
-    // tunnel.on('error', function() {
-    //     console.log(chalk.bgRed("An error happened with the tunnel"))
-    //     tunnel.close()
-    // });
-
     ngrok.connect(conf.apiPort, (err, url) => {
-            console.log('Ngrok started at', url)
             if(err) console.log(err)
             else {
                 request.post(
@@ -97,7 +74,7 @@ function startTunnel(){
                     { json: { url : url.replace("https","http"), domain : conf.domain } },
                     function (error, response, body) {
                         if (!error && response.statusCode == 200) {
-                            console.log("Tunnel registered at", body.redirect.domain+".quatrieme-gauche.ga")
+                            console.log(chalk.bgWhite.green("Tunnel registered at", body.redirect.domain+".quatrieme-gauche.ga"))
                         }
                     }
                 )
