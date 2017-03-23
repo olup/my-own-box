@@ -6,11 +6,8 @@ var fs = require('fs-extra');
 var path = require('path');
 var yaml = require('js-yaml')
 var fileserver = require('./fileserver.js');
-var cluster = require('cluster');
 
-// localtunnel specific dep
-var localtunnel = require('localtunnel');
-var https = require('https');
+// tunnel specific dep
 var request = require('request');
 var ngrok = require('ngrok');
 
@@ -29,20 +26,10 @@ var conf = {
     exclusions : []
 }
 
-if (cluster.isMaster) {
     console.log( chalk.bgWhite.blue(` =============================== 
  MY OWN BOX - HOSTED MICRO CLOUD 
  =============================== 
 `) )
-
-    cluster.fork();
-
-    cluster.on('exit', function(worker, code, signal) {
-        if(code == 1) cluster.fork();
-    });
-}
-
-if (cluster.isWorker) {
 
   // Loading conf file from root folder
     try {
@@ -75,7 +62,6 @@ if (cluster.isWorker) {
             else process.exit()
         })
     }
-}
 
 
 function startTunnel(){
