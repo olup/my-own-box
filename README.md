@@ -26,4 +26,3 @@ And VOILA !
 ## Configuration
 
 Add a conf.yml file at the root of your clouded folder to add some customization. If not present, the file will be created on first start.
-
