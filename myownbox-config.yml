@@ -28,4 +28,4 @@ jwtSecret : writeYourOwnHere
 
 # exclusions filter access to the filesystem based on path name. Those are regexes, so remember to escape your special chars.
 exclusions :
-  - \/conf.yml$
+  - \/myownbox-config.yml$
