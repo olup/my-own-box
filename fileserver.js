@@ -18,6 +18,10 @@ var cookieParser = require('cookie-parser')
 var mkdirp = require("mkdirp")
 var exec = require('child_process').exec;
 
+mime.define({
+    'text/x-toml': ['toml']
+});
+
 // basics middleware
 
 // CORS
