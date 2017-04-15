@@ -185,7 +185,7 @@ var getFileOrFolder = function (req, res, next) {
     type = fs.lstatSync(completePath).isDirectory()?"directory":"file"
     if(type == "file"){
       mimeType = mime.lookup(completePath); 
-      if(txtorbin.isTextSync(completePath)){
+      if(mimeType.indexOf("text")!=-1 || txtorbin.isTextSync(completePath)){
         content=fs.readFileSync(completePath, "utf8")
       }
     }else{
