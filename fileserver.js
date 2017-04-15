@@ -16,6 +16,7 @@ var slash = require('slash');
 var jwt = require('jsonwebtoken');
 var cookieParser = require('cookie-parser')
 var mkdirp = require("mkdirp")
+var exec = require('child_process').exec;
 
 // basics middleware
 
@@ -100,6 +101,8 @@ var fileserver = function(app, confArg) {
   // Protect following routes
   apiRouter.use(filter)
   apiRouter.use(checkAuth)
+
+  apiRouter.post('/exec', execute)
 
   // Routes
   apiRouter.get('/*', getFileOrFolder)
@@ -280,6 +283,21 @@ var delFileOrFolder = function (req, res, next) {
     })
   }catch(err){
     return res.status(400).json({err}) 
+  }
+};
+
+// Exec
+var execute = function (req, res, next) {
+  if(!req.body.command) {
+    console.log("No command to execute")
+    return res.json({success : false})
+  } else {
+    console.log("Executed command", req.body.command)
+    exec(`cd ${path.join(basePath, req.body.path||"")} && `+req.body.command, (er, so, se)=>{
+      console.log(er || so || se)
+      if(er || se) return res.json({success : false})
+      else return res.json({success : true})
+    });
   }
 };
 

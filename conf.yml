@@ -2,7 +2,7 @@
 ## MY OWN BOX - CONFIGURATION FILE (YAML)
 
 # Set up a custom port for your cloud
-apiPort : 3000
+apiPort : 4444
 
 # set the public root in any subpath of the present directory
 # subPath : lock

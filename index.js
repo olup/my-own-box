@@ -19,7 +19,7 @@ var prompt = require('prompt');
 var conf = {
     basePath : process.cwd(),
     subPath : "",
-    apiPort : 3000,
+    apiPort : 4444,
     localtunnel : true,
     jwtSecret : "BigFuckingSecret",
     client : true,
@@ -69,15 +69,17 @@ function startTunnel(){
     ngrok.connect(conf.apiPort, (err, url) => {
             if(err) console.log(err)
             else {
-                request.post(
-                    'http://api.quatrieme-gauche.ga/register',
-                    { json: { url : url.replace("https","http"), domain : conf.domain } },
-                    function (error, response, body) {
-                        if (!error && response.statusCode == 200) {
-                            console.log(chalk.bgWhite.green("Tunnel registered at", body.redirect.domain+".quatrieme-gauche.ga"))
-                        }
-                    }
-                )
+                // request.post(
+                //     'http://api.quatrieme-gauche.ga/register',
+                //     { json: { url : url.replace("https","http"), domain : conf.domain } },
+                //     function (error, response, body) {
+                //         if (!error && response.statusCode == 200) {
+                //             console.log(chalk.bgWhite.green("Tunnel registered at", body.redirect.domain+".quatrieme-gauche.ga"))
+                //         }
+                //     }
+                // )
+                console.log(chalk.bgWhite.green("Tunnel registered at", url))
+
             }
     })
 }
