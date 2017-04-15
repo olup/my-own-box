@@ -33,13 +33,13 @@ var conf = {
 
   // Loading conf file from root folder
     try {
-        var fileConf = yaml.safeLoad(fs.readFileSync(path.join(conf.basePath,'conf.yml'), 'utf8'));
+        var fileConf = yaml.safeLoad(fs.readFileSync(path.join(conf.basePath,'myownbox-config.yml'), 'utf8'));
         Object.assign(conf, fileConf)
         startServer(conf)
     } catch (e) {
         console.log(e)
         if(e.code == "ENOENT"){
-            fs.copySync(path.join(__dirname,'conf.yml'), path.join(conf.basePath, "conf.yml"))
+            fs.copySync(path.join(__dirname,'myownbox-config.yml'), path.join(conf.basePath, "myownbox-config.yml"))
             console.log(chalk.bgYellow('No config file found - We created one in your directory'));
         }else{
             console.log(chalk.bgRed("There was an error while reading your config file. Please make sure you wrote correct YAML"));
@@ -51,7 +51,7 @@ var conf = {
                 confirm: {
                     // allow yes, no, y, n, YES, NO, Y, N as answer
                     pattern: /^(yes|no)$/gi,
-                    description: 'Should we start the box anyway using default (say no to edit your conf.yml first)',
+                    description: 'Should we start the box anyway using default (say no to edit your myownbox-config.yml first)',
                     message: 'Type yes/no',
                     required: true,
                     default: 'no'
