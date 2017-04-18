@@ -62,7 +62,8 @@ var fileserver = function(app, confArg) {
   var storage = multer.diskStorage({
       destination: function (req, file, cb) {
           var reqPath = decodeURI(url.parse(req.url).pathname)
-          var completePath = slash(path.join(basePath,reqPath))
+          var userPath = req.user ? req.user.root || "" : ""
+          var completePath = slash(path.join(basePath, userPath, reqPath))
 
           var newDestination = completePath;
           var stat = null;
@@ -135,6 +136,7 @@ function checkAuth (req, res, next) {
     // invalid token
   jwt.verify(token, conf.jwtSecret, function(err, decoded) {
   if (err) return res.status(401).json({error : true, message : "token invalid"})
+    req.user = decoded
     return next()
   });
 }
@@ -149,7 +151,7 @@ function login (req, res, next){
   var id = users.findIndex(user => user.username == creds.username && user.password == creds.password)
   if(id == -1) return res.status(401).json({error : true, message : "wrong credentials"})
   else {
-    jwt.sign({username : users[id].username}, conf.jwtSecret, { algorithm: 'HS256' }, (err, token) => {
+    jwt.sign({username : users[id].username, root : users[id].root || null}, conf.jwtSecret, { algorithm: 'HS256' }, (err, token) => {
       if(err) return res.json(err)
       return res.json({success : true, token : token})
     })
@@ -173,9 +175,11 @@ function filter(req,res,next){
 var getFileOrFolder = function (req, res, next) {
 
   var reqPath = decodeURI(url.parse(req.url).pathname)
+  
+  var userPath = req.user ? req.user.root || "" : ""
   var topPath = path.dirname(reqPath)
   var name = path.basename(reqPath)
-  var completePath = slash(path.join(basePath,reqPath))
+  var completePath = slash(path.join(basePath,userPath,reqPath))
   var mimeType
 
   var content
@@ -194,9 +198,9 @@ var getFileOrFolder = function (req, res, next) {
         let name = file
         let topPath = reqPath 
         let mimeType
-        let type = fs.lstatSync( path.join(basePath,topPath,name) ).isDirectory()?"directory":"file"
-        if(type == "file") mimeType = mime.lookup( path.join(basePath,topPath,name) );
-        if(filterFile(path.join(basePath,topPath,name))) fileList.push({name , topPath, type, mimeType })
+        let type = fs.lstatSync( path.join(completePath,name) ).isDirectory()?"directory":"file"
+        if(type == "file") mimeType = mime.lookup( path.join(completePath,name) );
+        if(filterFile(path.join(completePath,name))) fileList.push({name , topPath, type, mimeType })
       }
     }
     // Option to download or get the raw file
@@ -216,10 +220,11 @@ var getFileOrFolder = function (req, res, next) {
 var postFileOrDir = function (req, res, next) {
 
   var reqPath = decodeURI(url.parse(req.url).pathname)
+  var userPath = req.user ? req.user.root || "" : ""
   var topPath = path.dirname(reqPath)
   var name = req.body.name || ""
   var isDir = name && name.substr(-1) === '/' || false;
-  var completePath = slash(path.join(basePath,reqPath, name))
+  var completePath = slash(path.join(basePath,userPath, reqPath, name))
   var mimeType
 
   mkdirp.sync(path.dirname(completePath))
@@ -252,9 +257,10 @@ var postFileOrDir = function (req, res, next) {
 // Put
 var putFileOrDir = function (req, res, next) {
   var reqPath = decodeURI(url.parse(req.url).pathname)
+  var userPath = req.user ? req.user.root || "" : ""
   var topPath = path.dirname(reqPath)
   var name = path.basename(reqPath)
-  var completePath = slash(path.join(basePath,reqPath))
+  var completePath = slash(path.join(basePath,userPath,reqPath))
 
   var body = req.body
 
@@ -275,9 +281,10 @@ var putFileOrDir = function (req, res, next) {
 // Delete
 var delFileOrFolder = function (req, res, next) {
   var reqPath = decodeURI(url.parse(req.url).pathname)
+  var userPath = req.user ? req.user.root || "" : ""
   var topPath = path.dirname(reqPath)
   var name = path.basename(reqPath)
-  var completePath = slash(path.join(basePath,reqPath))
+  var completePath = slash(path.join(basePath,userPath, reqPath))
 
   var body = req.body
 
