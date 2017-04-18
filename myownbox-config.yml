@@ -17,10 +17,10 @@ localtunnel : true
 client : true
 
 # Define here a user list for protected access. Default leaves the server open to anyone
-users : 
-  - username : user1
-    password : alongpasword
-    root     : client
+# users : 
+#   - username : user1
+#     password : alongpasword
+#     root     : userfolder
 #   - username : mememe
 #     password : hahahahahaha
 

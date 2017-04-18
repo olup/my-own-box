@@ -25,4 +25,6 @@ And VOILA !
 
 ## Configuration
 
-Add a conf.yml file at the root of your clouded folder to add some customization. If not present, the file will be created on first start.
+Add a myownbox-confing.yml file at the root of your clouded folder to add some customization. If not present, the file will be created on first start.
+
+The configuration file lets you protect the cloud with user accounts. Each account can also have a separate root folder.
