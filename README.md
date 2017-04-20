@@ -27,4 +27,10 @@ And VOILA !
 
 Add a myownbox-confing.yml file at the root of your clouded folder to add some customization. If not present, the file will be created on first start.
 
-The configuration file lets you protect the cloud with user accounts. Each account can also have a separate root folder.
+### Users
+
+The configuration file lets you protect the cloud with user accounts. Each account can also have a separate root folder to provide them with separated space
+
+### Scripts
+
+You can add scripts to the configuration file, to execute them from anywhere. Very usefull, for example, to rebuild your static site. Right now, scripts are always executed from the root folder where myownbox was called

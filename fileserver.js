@@ -182,6 +182,8 @@ var getFileOrFolder = function (req, res, next) {
   var completePath = slash(path.join(basePath,userPath,reqPath))
   var mimeType
 
+  var scripts = conf.scripts
+
   var content
   var fileList = []
 
@@ -207,7 +209,7 @@ var getFileOrFolder = function (req, res, next) {
     if(type == "file" && req.query.option == "download") return res.download(completePath)
     if(type == "file" && req.query.option == "raw") return res.sendFile(path.join(completePath))
     // Return JSON of file object
-    return res.json({ topPath, name, type, fileList, content, mimeType})
+    return res.json({ topPath, name, type, fileList, content, mimeType, scripts})
   }catch(err){
     return res.status(400).json({err}) 
   }
@@ -299,12 +301,13 @@ var delFileOrFolder = function (req, res, next) {
 
 // Exec
 var execute = function (req, res, next) {
-  if(!req.body.command) {
+  if(req.body.script === undefined || !conf.scripts[req.body.script]) {
     console.log("No command to execute")
     return res.json({success : false})
   } else {
-    console.log("Executed command", req.body.command)
-    exec(`cd ${path.join(basePath, req.body.path||"")} && `+req.body.command, (er, so, se)=>{
+    var script = conf.scripts[req.body.script]
+    console.log("Executed script :", script.name)
+    exec(`cd ${path.join(basePath, req.body.path||"")} && `+script.command, (er, so, se)=>{
       console.log(er || so || se)
       if(er || se) return res.json({success : false})
       else return res.json({success : true})
