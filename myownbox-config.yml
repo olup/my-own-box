@@ -24,9 +24,10 @@ client : true
 #   - username : mememe
 #     password : hahahahahaha
 
-scripts :
-  - name : "Build Hugo Blog"
-    command : "hugo"
+# Define scripts. For example : a hugo blog compilation.
+# scripts :
+#   - name : "Build Hugo Blog"
+#     command : "hugo"
 
 # Change the default json web token secret (recommanded) (this is for the cloud itself only, you won't have to remember it)
 jwtSecret : writeYourOwnHere
